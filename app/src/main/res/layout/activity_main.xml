@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPanel"
+    tools:context="com.example.think.tetris.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tv_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="15sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="top">
+
+                <com.example.think.tetris.view.Panel
+                    android:id="@+id/panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:panel_width="15"
+                    app:panel_height="20"
+                    android:background="@android:color/transparent"></com.example.think.tetris.view.Panel>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:padding="5dp">
+
+                <com.example.think.tetris.view.Panel
+                    android:id="@+id/next_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:panel_width="4"
+                    app:panel_height="4"></com.example.think.tetris.view.Panel>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.example.think.tetris.view.TView
+                android:id="@+id/btn_up"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="up"/>
+
+            <com.example.think.tetris.view.TView
+                android:id="@+id/btn_left"
+                android:layout_below="@id/btn_up"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="left"/>
+
+            <com.example.think.tetris.view.TView
+                android:id="@+id/btn_right"
+                android:layout_toRightOf="@id/btn_left"
+                android:layout_below="@id/btn_up"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="right"/>
+
+            <com.example.think.tetris.view.TView
+                android:id="@+id/btn_down"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/btn_right"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="down"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

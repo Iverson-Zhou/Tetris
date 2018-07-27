@@ -1,0 +1,158 @@
+package com.example.think.tetris;
+
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.think.tetris.engine.BlockState;
+import com.example.think.tetris.engine.EngingFactory;
+import com.example.think.tetris.engine.IEngine;
+import com.example.think.tetris.view.Panel;
+import com.example.think.tetris.view.TView;
+
+public class MainActivity extends AppCompatActivity implements IEngine.NextListener{
+
+    private IEngine engine;
+
+    private Panel panel;
+
+    private Panel nextPanel;
+
+    private TextView tvScore;
+
+    private TView up;
+    private TView left;
+    private TView right;
+    private TView down;
+
+    private Handler handler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        handler = new Handler();
+
+        initView();
+        initEngine();
+    }
+
+    private void initView() {
+        up = findViewById(R.id.btn_up);
+        left = findViewById(R.id.btn_left);
+        right = findViewById(R.id.btn_right);
+        down = findViewById(R.id.btn_down);
+
+        tvScore = findViewById(R.id.tv_score);
+
+//        up.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                engine.up();
+//            }
+//        });
+//
+//        left.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                engine.left();
+//            }
+//        });
+//
+//        right.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                engine.right();
+//            }
+//        });
+//
+//        down.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                engine.down();
+//            }
+//        });
+
+//        up.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                engine.up();
+//                return true;
+//            }
+//        });
+//        left.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                engine.left();
+//                return true;
+//            }
+//        });
+//        right.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                engine.right();
+//                return true;
+//            }
+//        });
+//        down.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                engine.down();
+//                return true;
+//            }
+//        });
+
+        up.setOnTouch(new TView.OnTouch() {
+            @Override
+            public void onTouch() {
+                engine.up();
+            }
+        });
+        left.setOnTouch(new TView.OnTouch() {
+            @Override
+            public void onTouch() {
+                engine.left();
+            }
+        });
+        right.setOnTouch(new TView.OnTouch() {
+            @Override
+            public void onTouch() {
+                engine.right();
+            }
+        });
+        down.setOnTouch(new TView.OnTouch() {
+            @Override
+            public void onTouch() {
+                engine.down();
+            }
+        });
+    }
+
+    public void initEngine() {
+        panel = findViewById(R.id.panel);
+        nextPanel = findViewById(R.id.next_panel);
+
+        engine = EngingFactory.getDefaultEngine();
+        engine.setPanelRefreshListener(panel);
+        engine.setNextPanelRefreshListener(nextPanel);
+        engine.setNextListener(this);
+        engine.setUp(panel.getBlockMapWidth(), panel.getBlockMapHeight());
+        engine.start();
+
+    }
+
+    @Override
+    public void onScore(final int score) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                tvScore.setText(String.valueOf(score));
+            }
+        });
+    }
+}

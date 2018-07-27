@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Panel">
+        <attr name="panel_width" format="integer"></attr>
+        <attr name="panel_height" format="integer"></attr>
+    </declare-styleable>
+</resources>
