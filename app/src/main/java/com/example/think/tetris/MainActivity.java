@@ -1,6 +1,7 @@
 package com.example.think.tetris;
 
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.think.tetris.audio.AudioPlayer;
 import com.example.think.tetris.engine.BlockState;
 import com.example.think.tetris.engine.EngingFactory;
 import com.example.think.tetris.engine.IEngine;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
     private TView down;
 
     private Handler handler;
+
+    private AudioPlayer audioPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
     }
 
     public void initEngine() {
+        audioPlayer = AudioPlayer.getInstance(this);
+
         panel = findViewById(R.id.panel);
         nextPanel = findViewById(R.id.next_panel);
 
@@ -97,5 +103,15 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
                 tvScore.setText(String.valueOf(score));
             }
         });
+    }
+
+    @Override
+    public void onClean() {
+        audioPlayer.play(AudioPlayer.Type.SOUND_CLEAN);
+    }
+
+    @Override
+    public void onMove() {
+        audioPlayer.play(AudioPlayer.Type.SOUND_MOVE);
     }
 }

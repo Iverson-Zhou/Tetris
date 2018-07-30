@@ -2,7 +2,9 @@ package com.example.think.tetris.engine;
 
 import android.graphics.Point;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -143,6 +145,7 @@ public class Engine implements IEngine {
         if (!isTouched(tmpBlockMap, nowBlockPosition)) {
             nowBlockMap = tmpBlockMap;
             mq.offer(Message.REFRESH);
+            nextListener.onMove();
         }
     }
 
@@ -153,6 +156,7 @@ public class Engine implements IEngine {
         }
         nowBlockPosition.y++;
         mq.offer(Message.REFRESH);
+        nextListener.onMove();
     }
 
     @Override
@@ -162,6 +166,7 @@ public class Engine implements IEngine {
         }
         nowBlockPosition.x--;
         mq.offer(Message.REFRESH);
+        nextListener.onMove();
     }
 
     @Override
@@ -171,6 +176,7 @@ public class Engine implements IEngine {
         }
         nowBlockPosition.x++;
         mq.offer(Message.REFRESH);
+        nextListener.onMove();
     }
 
     @Override
@@ -220,6 +226,7 @@ public class Engine implements IEngine {
     }
 
     class RefreshRunnable implements Runnable {
+        Set<Integer> completeLineId = new HashSet<>();
         @Override
         public void run() {
             while (running) {
@@ -229,14 +236,16 @@ public class Engine implements IEngine {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                for (int i = 0; i < stateMap.length; i++) {
-                    for (int j = 0; j < stateMap[0].length; j++) {
-                        stateMap[i][j] = BlockState.IDLE;
-                    }
-                }
 
                 switch (msg) {
                     case REFRESH:
+
+                        for (int i = 0; i < stateMap.length; i++) {
+                            for (int j = 0; j < stateMap[0].length; j++) {
+                                stateMap[i][j] = BlockState.IDLE;
+                            }
+                        }
+
                         for (int i = 0; i < nowBlockMap.length; i++) {
                             for (int j = 0; j < nowBlockMap[0].length; j++) {
                                 if (nowBlockMap[i][j] && nowBlockPosition.y + i >= 0) {
@@ -270,27 +279,28 @@ public class Engine implements IEngine {
                         nextPanelRefreshListener.onPanelRefresh(newStateMap);
                         break;
                     case CLEAN:
-                        synchronized (lock) {
-
-                            for (int t = 0; t < 3; t++) {
-
-                                for (int i = 0; i < stateMap.length; i++) {
-                                    for (int j = 0; j < stateMap[0].length; j++) {
-                                        stateMap[i][j] = BlockState.IDLE;
+                            completeLineId.clear();
+                            for (int i = 0; i < blockMap.length; i++) {
+                                boolean isCompleteLine = true;
+                                for (int j = 0; j < blockMap[i].length; j++) {
+                                    if (blockMap[i][j]) {
+                                        stateMap[i][j] = BlockState.BLOCKED;
+                                    } else {
+                                        isCompleteLine = false;
                                     }
                                 }
 
-                                for (int i = 0; i < blockMap.length; i++) {
-                                    boolean isCompleteLine = true;
-                                    for (int j = 0; j < blockMap[i].length; j++) {
-                                        if (blockMap[i][j]) {
-                                            stateMap[i][j] = BlockState.BLOCKED;
-                                        } else {
-                                            isCompleteLine = false;
-                                        }
-                                    }
+                                if (isCompleteLine) {
+                                    completeLineId.add(i);
+                                }
+                            }
 
-                                    if (isCompleteLine) {
+                            if (completeLineId.size() > 0) {
+                                nextListener.onClean();
+                                for (int t = 0; t < 6; t++) {
+
+                                    for (Integer i : completeLineId) {
+
                                         for (int j = 0; j < blockMap[i].length; j++) {
                                             if (t % 2 == 0) {
                                                 stateMap[i][j] = BlockState.CLEANING;
@@ -299,19 +309,19 @@ public class Engine implements IEngine {
                                             }
                                         }
                                     }
-                                }
-                                panelRefreshListener.onPanelRefresh(stateMap);
+                                    panelRefreshListener.onPanelRefresh(stateMap);
 
-                                try {
-                                    Thread.sleep(20);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
+
                             synchronized (lock) {
                                 lock.notifyAll();
                             }
-                        }
                         break;
                         default:
                             break;
@@ -336,6 +346,15 @@ public class Engine implements IEngine {
 
     private int clearLines() {
         int lines = 0;
+        try {
+            mq.offer(Message.CLEAN);
+            synchronized (lock) {
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         for (int i = 0; i < blockMap.length; i++) {
             boolean isCompleteLine = true;
             for (int j = 0; j < blockMap[i].length; j++) {
@@ -347,15 +366,6 @@ public class Engine implements IEngine {
             }
             if (!isCompleteLine) {
                 continue;
-            }
-
-            try {
-                mq.offer(Message.CLEAN);
-                synchronized (lock) {
-                    lock.wait();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
             for (int k = i; k > 0; k--) {

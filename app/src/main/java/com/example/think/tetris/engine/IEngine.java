@@ -34,5 +34,9 @@ public interface IEngine {
 
     interface NextListener {
         void onScore(int score);
+
+        void onClean();
+
+        void onMove();
     }
 }
