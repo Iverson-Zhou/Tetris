@@ -163,12 +163,23 @@ public class Engine implements IEngine {
         return Math.abs(random.nextInt()) % blockNum;
     }
 
+    /**
+     * 根据随机生成的值，生成一个方块
+     * @param blockState 一个随机生成的方块值
+     * @return
+     */
     private boolean[][] generateBlock(int blockState) {
         boolean[][] blockOfState = shape[blockState / 4];
         int arc = blockState % 4;
         return rotateBlock(blockOfState, Math.PI / 2 * arc);
     }
 
+    /**
+     * 旋转方块
+     * @param blockMap
+     * @param angel
+     * @return
+     */
     private boolean[][] rotateBlock(boolean[][] blockMap, double angel) {
         int Heigth = blockMap.length;
         int Width = blockMap[0].length;
@@ -303,12 +314,12 @@ public class Engine implements IEngine {
                 switch (msg) {
                     case REFRESH:
 
+                        //游戏主view刷新
                         for (int i = 0; i < stateMap.length; i++) {
                             for (int j = 0; j < stateMap[0].length; j++) {
                                 stateMap[i][j] = BlockState.IDLE;
                             }
                         }
-
                         for (int i = 0; i < nowBlockMap.length; i++) {
                             for (int j = 0; j < nowBlockMap[0].length; j++) {
                                 if (nowBlockMap[i][j] && nowBlockPosition.y + i >= 0) {
@@ -316,7 +327,6 @@ public class Engine implements IEngine {
                                 }
                             }
                         }
-
                         for (int i = 0; i < blockMap.length; i++) {
                             for (int j = 0; j < blockMap[i].length; j++) {
                                 if (blockMap[i][j]) {
@@ -326,6 +336,7 @@ public class Engine implements IEngine {
                         }
                         panelRefreshListener.onPanelRefresh(stateMap);
 
+                        //下个方块view刷新
                         for (int i = 0; i < 4; i++) {
                             for (int j = 0; j < 4; j++) {
                                 newStateMap[i][j] = BlockState.IDLE;
@@ -383,6 +394,7 @@ public class Engine implements IEngine {
                             }
 
                             synchronized (lock) {
+                                //UI刷新完成后，游戏主线程继续
                                 lock.notifyAll();
                             }
                         break;
@@ -413,6 +425,7 @@ public class Engine implements IEngine {
                         }
 
                         synchronized (lock) {
+                            //UI刷新完成后，游戏主线程继续
                             lock.notifyAll();
                         }
                         break;
@@ -440,8 +453,10 @@ public class Engine implements IEngine {
     private int clearLines() {
         int lines = 0;
         try {
+            //刷新UI
             mq.offer(Message.CLEAN);
             synchronized (lock) {
+                //等待UI刷新完成
                 lock.wait();
             }
         } catch (InterruptedException e) {
