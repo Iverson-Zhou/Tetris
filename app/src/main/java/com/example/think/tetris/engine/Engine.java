@@ -1,11 +1,10 @@
 package com.example.think.tetris.engine;
 
-import android.animation.ObjectAnimator;
 import android.graphics.Point;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by THINK on 2018/7/27.
@@ -38,7 +37,7 @@ public class Engine implements IEngine {
     private int nowBlockState;
     private int newBlockState;
 
-    private Timer timer;
+    private Thread engineThread;
 
     private Thread refreshThread;
 
@@ -49,9 +48,10 @@ public class Engine implements IEngine {
 
     private Object lock = new Object();
 
+    private BlockingQueue<Message> mq = new ArrayBlockingQueue<>(10);
+
     public Engine() {
         random = new Random();
-        timer = new Timer();
     }
 
     @Override
@@ -142,6 +142,7 @@ public class Engine implements IEngine {
         boolean[][] tmpBlockMap = rotateBlock(nowBlockMap, Math.PI / 2 * 1);
         if (!isTouched(tmpBlockMap, nowBlockPosition)) {
             nowBlockMap = tmpBlockMap;
+            mq.offer(Message.REFRESH);
         }
     }
 
@@ -151,6 +152,7 @@ public class Engine implements IEngine {
             return;
         }
         nowBlockPosition.y++;
+        mq.offer(Message.REFRESH);
     }
 
     @Override
@@ -159,6 +161,7 @@ public class Engine implements IEngine {
             return;
         }
         nowBlockPosition.x--;
+        mq.offer(Message.REFRESH);
     }
 
     @Override
@@ -167,12 +170,14 @@ public class Engine implements IEngine {
             return;
         }
         nowBlockPosition.x++;
+        mq.offer(Message.REFRESH);
     }
 
     @Override
     public void start() {
-        timer.schedule(new Task(), 0, 1000);
         running = true;
+        engineThread = new Thread(new Task());
+        engineThread.start();
         refreshThread = new Thread(new RefreshRunnable());
         refreshThread.start();
     }
@@ -187,20 +192,29 @@ public class Engine implements IEngine {
 
     }
 
-    class Task extends TimerTask {
+    class Task implements Runnable {
         @Override
         public void run() {
-            if (isTouched(nowBlockMap, new Point(nowBlockPosition.x, nowBlockPosition.y + 1))) {
-                if (fixMap()) {
-                    score = score + clearLines() * 10;
-                    nextListener.onScore(score);
-                    generateNewBlock();
+            while (running) {
+                if (isTouched(nowBlockMap, new Point(nowBlockPosition.x, nowBlockPosition.y + 1))) {
+                    if (fixMap()) {
+                        score = score + clearLines() * 10;
+                        nextListener.onScore(score);
+                        generateNewBlock();
+                    } else {
+                        //游戏结束
+                        init();
+                    }
                 } else {
-                    //游戏结束
-                    init();
+                    nowBlockPosition.y++;
                 }
-            } else {
-                nowBlockPosition.y++;
+                mq.offer(Message.REFRESH);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -209,49 +223,100 @@ public class Engine implements IEngine {
         @Override
         public void run() {
             while (running) {
-                for (int i = 0; i < blockMap.length; i++) {
-                    for (int j = 0; j < blockMap[0].length; j++) {
+                Message msg = Message.REFRESH;
+                try {
+                    msg = mq.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < stateMap.length; i++) {
+                    for (int j = 0; j < stateMap[0].length; j++) {
                         stateMap[i][j] = BlockState.IDLE;
                     }
                 }
 
-                for (int i = 0; i < nowBlockMap.length; i++) {
-                    for (int j = 0; j < nowBlockMap[0].length; j++) {
-                        if (nowBlockMap[i][j] && nowBlockPosition.y + i >= 0) {
-                            stateMap[nowBlockPosition.y + i][nowBlockPosition.x + j] = BlockState.BLOCKED;
+                switch (msg) {
+                    case REFRESH:
+                        for (int i = 0; i < nowBlockMap.length; i++) {
+                            for (int j = 0; j < nowBlockMap[0].length; j++) {
+                                if (nowBlockMap[i][j] && nowBlockPosition.y + i >= 0) {
+                                    stateMap[nowBlockPosition.y + i][nowBlockPosition.x + j] = BlockState.BLOCKED;
+                                }
+                            }
                         }
-                    }
-                }
 
-                for (int i = 0; i < blockMap.length; i++) {
-                    for (int j = 0; j < blockMap[i].length; j++) {
-                        if (blockMap[i][j]) {
-                            stateMap[i][j] = BlockState.BLOCKED;
+                        for (int i = 0; i < blockMap.length; i++) {
+                            for (int j = 0; j < blockMap[i].length; j++) {
+                                if (blockMap[i][j]) {
+                                    stateMap[i][j] = BlockState.BLOCKED;
+                                }
+                            }
                         }
-                    }
-                }
-                panelRefreshListener.onPanelRefresh(stateMap);
+                        panelRefreshListener.onPanelRefresh(stateMap);
 
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        newStateMap[i][j] = BlockState.IDLE;
+                        for (int i = 0; i < 4; i++) {
+                            for (int j = 0; j < 4; j++) {
+                                newStateMap[i][j] = BlockState.IDLE;
 
-                    }
-                }
-                for (int i = 0; i < newBlockMap.length; i++) {
-                    for (int j = 0; j < newBlockMap[i].length; j++) {
-                        if (newBlockMap[i][j]) {
-                            newStateMap[newBlockPositon.y + i][newBlockPositon.x + j] = BlockState.BLOCKED;
+                            }
                         }
-                    }
-                }
-                nextPanelRefreshListener.onPanelRefresh(newStateMap);
+                        for (int i = 0; i < newBlockMap.length; i++) {
+                            for (int j = 0; j < newBlockMap[i].length; j++) {
+                                if (newBlockMap[i][j]) {
+                                    newStateMap[newBlockPositon.y + i][newBlockPositon.x + j] = BlockState.BLOCKED;
+                                }
+                            }
+                        }
+                        nextPanelRefreshListener.onPanelRefresh(newStateMap);
+                        break;
+                    case CLEAN:
+                        synchronized (lock) {
 
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                            for (int t = 0; t < 3; t++) {
+
+                                for (int i = 0; i < stateMap.length; i++) {
+                                    for (int j = 0; j < stateMap[0].length; j++) {
+                                        stateMap[i][j] = BlockState.IDLE;
+                                    }
+                                }
+
+                                for (int i = 0; i < blockMap.length; i++) {
+                                    boolean isCompleteLine = true;
+                                    for (int j = 0; j < blockMap[i].length; j++) {
+                                        if (blockMap[i][j]) {
+                                            stateMap[i][j] = BlockState.BLOCKED;
+                                        } else {
+                                            isCompleteLine = false;
+                                        }
+                                    }
+
+                                    if (isCompleteLine) {
+                                        for (int j = 0; j < blockMap[i].length; j++) {
+                                            if (t % 2 == 0) {
+                                                stateMap[i][j] = BlockState.CLEANING;
+                                            } else {
+                                                stateMap[i][j] = BlockState.IDLE;
+                                            }
+                                        }
+                                    }
+                                }
+                                panelRefreshListener.onPanelRefresh(stateMap);
+
+                                try {
+                                    Thread.sleep(20);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            synchronized (lock) {
+                                lock.notifyAll();
+                            }
+                        }
+                        break;
+                        default:
+                            break;
                 }
+
             }
         }
     }
@@ -282,6 +347,15 @@ public class Engine implements IEngine {
             }
             if (!isCompleteLine) {
                 continue;
+            }
+
+            try {
+                mq.offer(Message.CLEAN);
+                synchronized (lock) {
+                    lock.wait();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             for (int k = i; k > 0; k--) {
@@ -332,5 +406,10 @@ public class Engine implements IEngine {
             }
         }
         return false;
+    }
+
+    enum Message {
+        REFRESH,
+        CLEAN;
     }
 }

@@ -71,13 +71,19 @@ public class TView extends android.support.v7.widget.AppCompatTextView {
                         synchronized (lock) {
                             lock.wait();
                         }
-                        Thread.sleep(50);
+                        //直接响应单击事件
+                        if (null != onTouch) {
+                            onTouch.onTouch();
+                        }
+
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                if (null != onTouch) {
+                //等待200ms后，如果还在点击状态，
+                if (null != onTouch && touching) {
                     onTouch.onTouch();
                 }
 
