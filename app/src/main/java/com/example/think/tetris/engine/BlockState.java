@@ -5,10 +5,19 @@ package com.example.think.tetris.engine;
  */
 
 public enum BlockState {
+    /**
+     * 当前位置没有方块
+     */
     IDLE(1),
 
+    /**
+     * 当前位置有方块
+     */
     BLOCKED(2),
 
+    /**
+     * 清除当前位置
+     */
     CLEANING(3);
 
     private int state;

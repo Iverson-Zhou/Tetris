@@ -14,35 +14,84 @@ import java.util.concurrent.BlockingQueue;
 
 public class Engine implements IEngine {
 
+    /**
+     * 给方块主view的回调
+     */
     private PanelRefreshListener panelRefreshListener;
-
+    /**
+     * 显示下一个方块的回调
+     */
     private PanelRefreshListener nextPanelRefreshListener;
 
     private NextListener nextListener;
 
+    /**
+     * 生成下一方块
+     */
     private Random random;
 
+    /**
+     * 得分，消除一行得10分
+     */
     private int score;
 
+    /**
+     * 方块主view{@link com.example.think.tetris.view.Panel}的抽象
+     */
     private boolean blockMap[][];
     private int blockMapWidth;
     private int blockMapHeight;
 
+    /**
+     * 所有可能的方块, 不包含旋转的
+     */
     private boolean shape[][][] = Blocks.shape;
 
+    /**
+     * 当前方块在方块主view的位置
+     */
     private Point nowBlockPosition;
+
+    /**
+     * 下一方块在显示下一方块的view中的位置
+     */
     private Point newBlockPositon;
 
+    /**
+     * 当前的方块
+     */
     private boolean nowBlockMap[][];
+
+    /**
+     * 下一个方块
+     */
     private boolean newBlockMap[][];
 
+    /**
+     * 代表随机生成的方块。shape中总共有7中原始的方块，每种方块4中旋转，总共28中可能性。
+     * nowBlockState / 4，代表当前的方块种类
+     * nowBlockState % 4，代表当前方块的旋转次数
+     */
     private int nowBlockState;
+
+    /**
+     * 下一次随机生成的方块
+     */
     private int newBlockState;
 
+    /**
+     * 游戏业务主循环
+     */
     private Thread engineThread;
 
+    /**
+     * 刷新循环
+     */
     private Thread refreshThread;
 
+    /**
+     * 将{@link blockMap}中方块主view映射出不同的额状态，用于直接更新方块主view
+     */
     private BlockState[][] stateMap;
     private BlockState[][] newStateMap;
 
@@ -463,8 +512,19 @@ public class Engine implements IEngine {
     }
 
     enum Message {
+        /**
+         * 刷新一次
+         */
         REFRESH,
+
+        /**
+         * 清除完整行
+         */
         CLEAN,
+
+        /**
+         * 游戏结束
+         */
         GAME_OVER
     }
 }
