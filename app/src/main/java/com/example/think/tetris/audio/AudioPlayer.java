@@ -42,12 +42,12 @@ public class AudioPlayer {
                 }
             }
         }
-        return sInstance ;
+        return sInstance;
     }
 
     public void play(int type){
         if(null == sSpMap.get(type)) {
-            return ;
+            return;
         }
 
         mSp.play(sSpMap.get(type), 1, 1, 0, 0, 1) ;
