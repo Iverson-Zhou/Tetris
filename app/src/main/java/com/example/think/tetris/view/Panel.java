@@ -3,6 +3,7 @@ package com.example.think.tetris.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -145,7 +146,10 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        Paint p = new Paint();
+        p.setStrokeWidth(10);
+        p.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), p);
     }
 
     public int getBlockMapWidth() {

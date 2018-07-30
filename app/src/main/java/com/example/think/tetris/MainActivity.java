@@ -114,4 +114,10 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
     public void onMove() {
         audioPlayer.play(AudioPlayer.Type.SOUND_MOVE);
     }
+
+    @Override
+    public void onGameOver() {
+        Log.i("zhoukai", "onOver");
+        audioPlayer.play(AudioPlayer.Type.SOUND_GAME_OVER);
+    }
 }

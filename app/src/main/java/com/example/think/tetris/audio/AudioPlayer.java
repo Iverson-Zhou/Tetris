@@ -17,6 +17,7 @@ public class AudioPlayer {
     public static class Type{
         public final static int SOUND_CLEAN = 1 ;
         public final static int SOUND_MOVE = 2 ;
+        public final static int SOUND_GAME_OVER = 3;
     }
 
     private Context mContext ;
@@ -30,6 +31,7 @@ public class AudioPlayer {
         mSp = new SoundPool(10 , AudioManager.STREAM_MUSIC ,100) ;
         sSpMap.put(Type.SOUND_CLEAN, mSp.load(mContext, R.raw.clean, 1)) ;
         sSpMap.put(Type.SOUND_MOVE, mSp.load(mContext, R.raw.move, 1)) ;
+        sSpMap.put(Type.SOUND_GAME_OVER, mSp.load(mContext, R.raw.gameover, 1)) ;
     }
 
     public static AudioPlayer getInstance(Context context){

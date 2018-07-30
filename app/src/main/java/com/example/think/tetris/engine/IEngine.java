@@ -38,5 +38,7 @@ public interface IEngine {
         void onClean();
 
         void onMove();
+
+        void onGameOver();
     }
 }

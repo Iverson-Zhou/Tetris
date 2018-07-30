@@ -82,7 +82,7 @@ public class TView extends android.support.v7.widget.AppCompatTextView {
                     }
                 }
 
-                //等待200ms后，如果还在点击状态，
+                //等待200ms后，如果还在点击状态，回调点击监听
                 if (null != onTouch && touching) {
                     onTouch.onTouch();
                 }

@@ -209,6 +209,7 @@ public class Engine implements IEngine {
                         generateNewBlock();
                     } else {
                         //游戏结束
+                        gameOver();
                         init();
                     }
                 } else {
@@ -222,6 +223,19 @@ public class Engine implements IEngine {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void gameOver() {
+        nextListener.onGameOver();
+        mq.offer(Message.GAME_OVER);
+
+        try {
+            synchronized (lock) {
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -323,6 +337,36 @@ public class Engine implements IEngine {
                                 lock.notifyAll();
                             }
                         break;
+                    case GAME_OVER:
+                        for (int i = stateMap.length - 1; i >= 0; i--) {
+                            for (int j = 0; j < stateMap[i].length; j++) {
+                                stateMap[i][j] = BlockState.BLOCKED;
+                            }
+
+                            panelRefreshListener.onPanelRefresh(stateMap);
+                            try {
+                                Thread.sleep(20);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (int i = 0; i < stateMap.length; i++) {
+                            for (int j = 0; j < stateMap[i].length; j++) {
+                                stateMap[i][j] = BlockState.IDLE;
+                            }
+
+                            panelRefreshListener.onPanelRefresh(stateMap);
+                            try {
+                                Thread.sleep(30);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        synchronized (lock) {
+                            lock.notifyAll();
+                        }
+                        break;
                         default:
                             break;
                 }
@@ -420,6 +464,7 @@ public class Engine implements IEngine {
 
     enum Message {
         REFRESH,
-        CLEAN;
+        CLEAN,
+        GAME_OVER
     }
 }
