@@ -50,63 +50,6 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
 
         tvScore = findViewById(R.id.tv_score);
 
-//        up.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                engine.up();
-//            }
-//        });
-//
-//        left.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                engine.left();
-//            }
-//        });
-//
-//        right.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                engine.right();
-//            }
-//        });
-//
-//        down.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                engine.down();
-//            }
-//        });
-
-//        up.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                engine.up();
-//                return true;
-//            }
-//        });
-//        left.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                engine.left();
-//                return true;
-//            }
-//        });
-//        right.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                engine.right();
-//                return true;
-//            }
-//        });
-//        down.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                engine.down();
-//                return true;
-//            }
-//        });
-
         up.setOnTouch(new TView.OnTouch() {
             @Override
             public void onTouch() {

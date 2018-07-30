@@ -1,5 +1,6 @@
 package com.example.think.tetris.engine;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Point;
 
 import java.util.Random;
@@ -45,6 +46,8 @@ public class Engine implements IEngine {
     private BlockState[][] newStateMap;
 
     private boolean running = false;
+
+    private Object lock = new Object();
 
     public Engine() {
         random = new Random();

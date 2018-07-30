@@ -1,11 +1,8 @@
 package com.example.think.tetris.view;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 /**
