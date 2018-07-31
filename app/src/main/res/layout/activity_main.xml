@@ -71,48 +71,79 @@
 
         </LinearLayout>
 
-        <RelativeLayout
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight=".2"></View>
 
-            <com.example.think.tetris.view.TView
-                android:id="@+id/btn_up"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:text="up"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-            <com.example.think.tetris.view.TView
-                android:id="@+id/btn_left"
-                android:layout_below="@id/btn_up"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="left"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></View>
 
-            <com.example.think.tetris.view.TView
-                android:id="@+id/btn_right"
-                android:layout_toRightOf="@id/btn_left"
-                android:layout_below="@id/btn_up"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="right"/>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <com.example.think.tetris.view.TView
-                android:id="@+id/btn_down"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_below="@id/btn_right"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:text="down"/>
-        </RelativeLayout>
+                <com.example.think.tetris.view.TView
+                    android:id="@+id/btn_up"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="↑"
+                    android:textSize="20sp"
+                    android:background="@drawable/bg_selector"/>
+
+                <com.example.think.tetris.view.TView
+                    android:id="@+id/btn_left"
+                    android:layout_below="@id/btn_up"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:gravity="center"
+                    android:text="←"
+                    android:textSize="20sp"
+                    android:background="@drawable/bg_selector"/>
+
+                <com.example.think.tetris.view.TView
+                    android:id="@+id/btn_right"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/btn_up"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:gravity="center"
+                    android:text="→"
+                    android:textSize="20sp"
+                    android:background="@drawable/bg_selector"/>
+
+                <com.example.think.tetris.view.TView
+                    android:id="@+id/btn_down"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@id/btn_right"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="↓"
+                    android:textSize="20sp"
+                    android:background="@drawable/bg_selector"/>
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"></View>
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </android.support.constraint.ConstraintLayout>

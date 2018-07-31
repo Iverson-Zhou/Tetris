@@ -1,8 +1,11 @@
 package com.example.think.tetris.engine;
 
 import android.graphics.Point;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -300,7 +303,7 @@ public class Engine implements IEngine {
     }
 
     class RefreshRunnable implements Runnable {
-        Set<Integer> completeLineId = new HashSet<>();
+        List<Integer> completeLineId = new ArrayList<>(blockMapHeight);
         @Override
         public void run() {
             while (running) {
@@ -353,6 +356,7 @@ public class Engine implements IEngine {
                         nextPanelRefreshListener.onPanelRefresh(newStateMap);
                         break;
                     case CLEAN:
+                        long sTime = System.currentTimeMillis();
                             completeLineId.clear();
                             for (int i = 0; i < blockMap.length; i++) {
                                 boolean isCompleteLine = true;

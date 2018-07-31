@@ -4,12 +4,13 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.Button;
 
 /**
  * Created by THINK on 2018/7/27.
  */
 
-public class TView extends android.support.v7.widget.AppCompatTextView {
+public class TView extends android.support.v7.widget.AppCompatButton {
     private Object lock = new Object();
     private Thread touchRun;
     private boolean alive = true;
@@ -40,6 +41,7 @@ public class TView extends android.support.v7.widget.AppCompatTextView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 synchronized (lock) {
