@@ -11,8 +11,8 @@
             </item>
             <item>
                 <shape android:shape="ring"
-                    android:innerRadiusRatio="4"
-                    android:thicknessRatio="4"
+                    android:innerRadiusRatio="3.3"
+                    android:thicknessRatio="5.1"
                     android:useLevel="false">
                     <size android:height="40dp" android:width="40dp"></size>
                     <solid android:color="@color/colorYellow"></solid>
@@ -32,8 +32,8 @@
             </item>
             <item>
                 <shape android:shape="ring"
-                    android:innerRadiusRatio="2.6"
-                    android:thicknessRatio="8.9"
+                    android:innerRadiusRatio="2.5"
+                    android:thicknessRatio="10"
                     android:useLevel="false">
                     <size android:height="40dp" android:width="40dp"></size>
                     <solid android:color="@color/colorYellow"></solid>
