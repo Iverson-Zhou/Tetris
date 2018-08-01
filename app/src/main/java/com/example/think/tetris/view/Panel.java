@@ -95,9 +95,9 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
 
         if (widthMode == MeasureSpec.EXACTLY || heightMode == MeasureSpec.EXACTLY) {
             if (widthSize / blockMapWidth < heightSize / blockMapHeight) {
-                setMeasuredDimension(MeasureSpec.makeMeasureSpec(widthSize, widthMode), MeasureSpec.makeMeasureSpec((int) ((float) widthSize * heightMatchWidth), heightMode));
+                setMeasuredDimension(widthSize, (int) ((float) widthSize * heightMatchWidth));
             } else {
-                setMeasuredDimension(MeasureSpec.makeMeasureSpec((int) ((float) heightSize * widthMatchHeight), widthMode), MeasureSpec.makeMeasureSpec((heightSize), heightMode));
+                setMeasuredDimension((int) ((float) heightSize * widthMatchHeight), heightSize);
             }
         } else {
             int defaultBlockWidthNeed = defaultBlockSize * blockMapWidth;
@@ -106,18 +106,18 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
             if (defaultBlockWidthNeed >= widthSize) {
                 if (defaultBlockHeightNeed >= heightSize) {
                     if (widthSize / blockMapWidth < heightSize / blockMapHeight) {
-                        setMeasuredDimension(MeasureSpec.makeMeasureSpec(widthSize, widthMode), MeasureSpec.makeMeasureSpec((int) ((float) widthSize * heightMatchWidth), heightMode));
+                        setMeasuredDimension(widthSize, (int) ((float) widthSize * heightMatchWidth));
                     } else {
-                        setMeasuredDimension(MeasureSpec.makeMeasureSpec((int) ((float) heightSize * widthMatchHeight), widthMode), MeasureSpec.makeMeasureSpec((heightSize), heightMode));
+                        setMeasuredDimension((int) ((float) heightSize * widthMatchHeight), heightSize);
                     }
                 } else {
-                    setMeasuredDimension(MeasureSpec.makeMeasureSpec((int) ((float) heightSize * widthMatchHeight), widthMode), MeasureSpec.makeMeasureSpec((heightSize), heightMode));
+                    setMeasuredDimension((int) ((float) heightSize * widthMatchHeight), (heightSize));
                 }
             } else {
                 if (defaultBlockHeightNeed >= heightSize) {
-                    setMeasuredDimension(MeasureSpec.makeMeasureSpec(widthSize, widthMode), MeasureSpec.makeMeasureSpec((int) ((float) widthSize * heightMatchWidth), heightMode));
+                    setMeasuredDimension(widthSize, (int) ((float) widthSize * heightMatchWidth));
                 } else {
-                    setMeasuredDimension(MeasureSpec.makeMeasureSpec(defaultBlockWidthNeed, widthMode), MeasureSpec.makeMeasureSpec(defaultBlockHeightNeed, heightMode));
+                    setMeasuredDimension(defaultBlockWidthNeed, defaultBlockHeightNeed);
                 }
             }
         }
