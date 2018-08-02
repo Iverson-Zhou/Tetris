@@ -58,7 +58,7 @@ public class ScoreView extends LinearLayout {
         electronicalNumbers[2] = hundreds;
         electronicalNumbers[1] = ten;
         electronicalNumbers[0] = one;
-        showNumber(140);
+        showNumber(0);
     }
 
     @Override
