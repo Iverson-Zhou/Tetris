@@ -12,6 +12,7 @@ import com.example.think.tetris.R;
  */
 
 public class ScoreView extends LinearLayout {
+    private static final int N_PLURAL = 4;
     /**
      * 千位
      */
@@ -52,12 +53,12 @@ public class ScoreView extends LinearLayout {
         ten = findViewById(R.id.ten);
         one = findViewById(R.id.one);
 
-        electronicalNumbers = new ElectronicalNumber[4];
+        electronicalNumbers = new ElectronicalNumber[N_PLURAL];
         electronicalNumbers[3] = thousands;
         electronicalNumbers[2] = hundreds;
         electronicalNumbers[1] = ten;
         electronicalNumbers[0] = one;
-        showNumber(0);
+        showNumber(140);
     }
 
     @Override
@@ -79,6 +80,13 @@ public class ScoreView extends LinearLayout {
             if (null != electronicalNumbers[i]) {
                 electronicalNumbers[i++].showNumber(remainder);
             }
-        } while (number != 0 && i < 4);
+        } while (number != 0 && i < N_PLURAL);
+
+        //清空不应显示的高位
+        for (;i < N_PLURAL; i++) {
+            if (null != electronicalNumbers[i]) {
+                electronicalNumbers[i].showNumber(-1);
+            }
+        }
     }
 }
