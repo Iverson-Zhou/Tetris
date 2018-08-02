@@ -249,11 +249,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * * *
-     *  *
-     * * *
-     * *
+     *    -
+     *   * *
+     *    *
+     *   * *
+     *    *
      */
     private void part1(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -268,11 +268,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | *
-     *  *
-     * * *
-     * *
+     *    *
+     *   | *
+     *    *
+     *   * *
+     *    *
      */
     private void part2(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -288,11 +288,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | |
-     *  *
-     * * *
-     * *
+     *    *
+     *   * |
+     *    *
+     *   * *
+     *    *
      */
     private void part3(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -309,11 +309,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | |
-     *  -
-     * * *
-     * *
+     *    *
+     *   * *
+     *    -
+     *   * *
+     *    *
      */
     private void part4(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -331,11 +331,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | |
-     *  -
-     * | *
-     *  *
+     *    *
+     *   * *
+     *    *
+     *   | *
+     *    *
      */
     private void part5(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -352,11 +352,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | |
-     *  -
-     * | |
-     *  *
+     *    *
+     *   * *
+     *    *
+     *   * |
+     *    *
      */
     private void part6(Canvas canvas, boolean solid) {
         setUpPaint(solid);
@@ -373,11 +373,11 @@ public class ElectronicalNumber extends View {
     }
 
     /**
-     *  -
-     * | |
-     *  -
-     * | |
-     *  -
+     *    *
+     *   * *
+     *    *
+     *   * *
+     *    -
      */
     private void part7(Canvas canvas, boolean solid) {
         setUpPaint(solid);
