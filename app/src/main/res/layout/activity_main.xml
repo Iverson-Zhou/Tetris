@@ -29,12 +29,36 @@
                 android:layout_weight="1.5"
                 android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/tv_score"
+                <com.example.think.tetris.view.ScoreView
+                    android:id="@+id/scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="15sp"/>
+                    android:orientation="horizontal">
+
+                    <com.example.think.tetris.view.ElectronicalNumber
+                        android:id="@+id/thousands"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <com.example.think.tetris.view.ElectronicalNumber
+                        android:id="@+id/hundreds"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <com.example.think.tetris.view.ElectronicalNumber
+                        android:id="@+id/ten"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <com.example.think.tetris.view.ElectronicalNumber
+                        android:id="@+id/one"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                </com.example.think.tetris.view.ScoreView>
 
             </RelativeLayout>
 
@@ -86,7 +110,8 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"></View>
+                android:layout_weight="1">
+            </View>
 
             <RelativeLayout
                 android:layout_width="0dp"

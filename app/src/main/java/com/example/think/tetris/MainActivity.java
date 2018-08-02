@@ -15,6 +15,7 @@ import com.example.think.tetris.engine.BlockState;
 import com.example.think.tetris.engine.EngingFactory;
 import com.example.think.tetris.engine.IEngine;
 import com.example.think.tetris.view.Panel;
+import com.example.think.tetris.view.ScoreView;
 import com.example.think.tetris.view.TView;
 
 public class MainActivity extends AppCompatActivity implements IEngine.NextListener{
@@ -25,12 +26,12 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
 
     private Panel nextPanel;
 
-    private TextView tvScore;
-
     private TView up;
     private TView left;
     private TView right;
     private TView down;
+
+    private ScoreView scoreView;
 
     private Handler handler;
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
         right = findViewById(R.id.btn_right);
         down = findViewById(R.id.btn_down);
 
-        tvScore = findViewById(R.id.tv_score);
+        scoreView = findViewById(R.id.scrollView);
 
         up.setOnTouch(new TView.OnTouch() {
             @Override
@@ -97,12 +98,7 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
 
     @Override
     public void onScore(final int score) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                tvScore.setText(String.valueOf(score));
-            }
-        });
+        scoreView.showNumber(score);
     }
 
     @Override

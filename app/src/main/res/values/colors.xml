@@ -9,4 +9,5 @@
     <color name="colorBlocked">#000500</color>
     <color name="colorCleaning">#FF2525</color>
     <color name="colorYellow">#FFCC33</color>
+    <color name="colorTransparentBlack">#11000500</color>
 </resources>
