@@ -98,6 +98,12 @@ public class MainActivity extends AppCompatActivity implements IEngine.NextListe
     @Override
     public void onClean() {
         audioPlayer.play(AudioPlayer.Type.SOUND_CLEAN);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                panel.cleanAnimation();
+            }
+        });
     }
 
     @Override

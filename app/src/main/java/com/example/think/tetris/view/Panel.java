@@ -1,8 +1,13 @@
 package com.example.think.tetris.view;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Camera;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +28,7 @@ import com.example.think.tetris.engine.IEngine;
  */
 
 public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
+    private static final String TAG = "Panel";
 
     private int blockMapWidth;
     private int blockMapHeight;
@@ -43,6 +49,17 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
     private float widthMatchHeight;
 
     private BlockState[][] state;
+
+    private Camera camera;
+    private Matrix cameraMatrix;
+
+    private float canvasTranslateX;
+
+    private float canvasTranslateY;
+
+    private float canvasScaleX;
+
+    private float canvasScaleY;
 
     public Panel(@NonNull Context context) {
         super(context);
@@ -72,6 +89,14 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
         heightMatchWidth = (float) blockMapHeight / (float) blockMapWidth;
         widthMatchHeight = (float) blockMapWidth / (float) blockMapHeight;
         initBlockMap();
+
+
+        canvasTranslateX = 0;
+        canvasTranslateY = 0;
+        canvasScaleX = 1.0f;
+        canvasScaleY = 1.0f;
+        camera = new Camera();
+        cameraMatrix = new Matrix();
     }
 
     private void initBlockMap() {
@@ -146,10 +171,28 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
 
     @Override
     protected void onDraw(Canvas canvas) {
+        setCanvasTrans(canvas);
+
         Paint p = new Paint();
         p.setStrokeWidth(10);
         p.setStyle(Paint.Style.STROKE);
         canvas.drawRect(0, 0, getWidth(), getHeight(), p);
+    }
+
+    private void setCanvasTrans(Canvas canvas) {
+        cameraMatrix.reset();
+        camera.save();
+        camera.getMatrix(cameraMatrix);
+        camera.restore();
+
+        cameraMatrix.preTranslate(-getWidth() / 2, -getHeight() / 2);
+        cameraMatrix.postTranslate(getWidth() / 2, getHeight() / 2);
+
+        canvas.concat(cameraMatrix);
+
+        canvas.scale(canvasScaleX, canvasScaleY, getWidth() / 2, getHeight() / 2);
+
+        canvas.translate(canvasTranslateX, canvasTranslateY);
     }
 
     public int getBlockMapWidth() {
@@ -186,5 +229,66 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
     @Override
     public void onPanelRefresh(BlockState[][] newPanel) {
         drawState(newPanel);
+    }
+
+    public void cleanAnimation() {
+        final String translateX = "canvasTranslateX";
+        final String translateY = "canvasTranslateY";
+        final String scaleX = "scaleX";
+        final String scaleY = "scaleY";
+
+        canvasScaleX = 0.97f;
+        canvasScaleY = 0.97f;
+        canvasTranslateX = 10;
+//        canvasTranslateY = 10;
+        PropertyValuesHolder propertyValuesHolderScaleX =
+                PropertyValuesHolder.ofFloat(scaleX, canvasScaleX, 1.0f);
+        PropertyValuesHolder propertyValuesHolderScaleY =
+                PropertyValuesHolder.ofFloat(scaleY, canvasScaleY, 1.0f);
+        PropertyValuesHolder propertyValuesHolderTranslateX =
+                PropertyValuesHolder.ofFloat(translateX, canvasTranslateX, 0);
+        PropertyValuesHolder propertyValuesHolderTranslateY =
+                PropertyValuesHolder.ofFloat(translateY, canvasTranslateY, 0);
+
+        ValueAnimator valueAnimator = ValueAnimator.
+                ofPropertyValuesHolder(propertyValuesHolderTranslateX,
+                        propertyValuesHolderTranslateY);
+
+        ValueAnimator valueAnimatorScale = ValueAnimator.ofPropertyValuesHolder(
+                propertyValuesHolderScaleX, propertyValuesHolderScaleY);
+
+        valueAnimator.setInterpolator(new TimeInterpolator() {
+            @Override
+            public float getInterpolation(float input) {
+
+                float f = 0.571429f;
+                return (float) (Math.pow(2, -2 * input) * Math.sin((input - f / 4) * (2 * Math.PI) / f) + 1);
+            }
+        });
+
+        valueAnimator.setDuration(200);
+        valueAnimatorScale.setDuration(200);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                canvasTranslateX = (float) animation.getAnimatedValue(translateX);
+                canvasTranslateY = (float) animation.getAnimatedValue(translateY);
+
+                postInvalidate();
+            }
+        });
+        valueAnimatorScale.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                canvasScaleX = (float) animation.getAnimatedValue(scaleX);
+                canvasScaleY = (float) animation.getAnimatedValue(scaleY);
+                Log.i(TAG, "onAnimationUpdate: " + canvasScaleX + canvasScaleY);
+            }
+        });
+
+        valueAnimator.start();
+        valueAnimatorScale.start();
+
     }
 }
