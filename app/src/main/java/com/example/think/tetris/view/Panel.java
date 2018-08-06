@@ -97,6 +97,8 @@ public class Panel extends ViewGroup implements IEngine.PanelRefreshListener{
         canvasScaleY = 1.0f;
         camera = new Camera();
         cameraMatrix = new Matrix();
+
+        array.recycle();
     }
 
     private void initBlockMap() {
