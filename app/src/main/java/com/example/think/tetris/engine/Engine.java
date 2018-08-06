@@ -100,6 +100,9 @@ public class Engine implements IEngine {
 
     private boolean running = false;
 
+    private boolean pause = false;
+    private Object pauseLock = new Object();
+
     private Object lock = new Object();
 
     private BlockingQueue<Message> mq = new ArrayBlockingQueue<>(10);
@@ -258,13 +261,28 @@ public class Engine implements IEngine {
 
     @Override
     public void pause() {
+        if (pause) {
+            synchronized (pauseLock) {
+                pauseLock.notifyAll();
+            }
+        }
 
+        pause = !pause;
     }
 
     class Task implements Runnable {
         @Override
         public void run() {
             while (running) {
+                if (pause) {
+                    try {
+                        synchronized (pauseLock) {
+                            pauseLock.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (isTouched(nowBlockMap, new Point(nowBlockPosition.x, nowBlockPosition.y + 1))) {
                     if (fixMap()) {
                         score = score + clearLines() * 10;
